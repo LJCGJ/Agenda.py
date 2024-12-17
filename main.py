@@ -13,9 +13,13 @@ def exibir_menu():
     print("6. Sair")
 
 def criar_contato():
-    nome = input("Nome do contato: ")
-    telefone = input("Telefone do contato: ")
-    email = input("E-mail do contato: ")
+    nome = input("Nome do contato: ").strip()
+    telefone = input("Telefone do contato: ").strip()
+    email = input("E-mail do contato: ").strip()
+
+    if not nome or not telefone or not email:
+        print("Todos os campos são obrigatórios!")
+        return
 
     with open(arquivo_csv, 'a', newline='') as file:
         writer = csv.writer(file)
@@ -34,7 +38,7 @@ def listar_contatos():
         print("Nenhum contato encontrado.")
 
 def atualizar_contato():
-    nome_atualizar = input("Nome do contato a atualizar: ")
+    nome_atualizar = input("Nome do contato a atualizar: ").strip()
     encontrado = False
     contatos = []
 
@@ -43,8 +47,8 @@ def atualizar_contato():
             reader = csv.reader(file)
             for row in reader:
                 if row[0] == nome_atualizar:
-                    telefone = input("Novo telefone: ")
-                    email = input("Novo e-mail: ")
+                    telefone = input("Novo telefone: ").strip()
+                    email = input("Novo e-mail: ").strip()
                     contatos.append([nome_atualizar, telefone, email])
                     encontrado = True
                 else:
@@ -59,7 +63,7 @@ def atualizar_contato():
             print("Contato não encontrado.")
 
 def deletar_contato():
-    nome_deletar = input("Nome do contato a deletar: ")
+    nome_deletar = input("Nome do contato a deletar: ").strip()
     encontrado = False
     contatos = []
 
@@ -73,10 +77,14 @@ def deletar_contato():
                     contatos.append(row)
 
         if encontrado:
-            with open(arquivo_csv, 'w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerows(contatos)
-            print("Contato deletado!")
+            confirmar = input(f"Tem certeza que deseja deletar o contato '{nome_deletar}'? (s/n): ").strip().lower()
+            if confirmar == 's':
+                with open(arquivo_csv, 'w', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerows(contatos)
+                print("Contato deletado!")
+            else:
+                print("Ação de deletar contato cancelada.")
         else:
             print("Contato não encontrado.")
 
@@ -95,7 +103,7 @@ def baixar_contatos():
 def main():
     while True:
         exibir_menu()
-        opcao = input("Escolha uma opção: ")
+        opcao = input("Escolha uma opção: ").strip()
 
         if opcao == "1":
             criar_contato()
